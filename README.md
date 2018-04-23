@@ -1,3 +1,3 @@
-# ts-express-controller
+# ts-postgres-model
 
-Helper for creating consistent JSON APIs in express.
+Abstract class for creating postgres model classes
