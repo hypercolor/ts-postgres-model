@@ -80,7 +80,7 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
   // abstract get defaultReadAcl(): string;
   // abstract get defaultWriteAcl(): string;
 
-  abstract get columns(): object;
+  // abstract get columns(): object;
   abstract get readOnlyColumns(): Array<string>;
 
 
@@ -146,7 +146,7 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
     return this.willBeUpdated(params)
     .then(updatedParams => {
       Object.keys(updatedParams).forEach(key => {
-        if (Object.values(this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
+        if (restrictedKeys.indexOf(key) === -1) {
           this.set(key, updatedParams[key]);
         }
       });
