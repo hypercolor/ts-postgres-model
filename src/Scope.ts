@@ -3,12 +3,12 @@ import { IUser } from "./IUser";
 import { PostgresModel } from "./PostgresModel";
 
 // TODO: Refactor this interface to allow each concrete class to provide their own assumptions about keys on the model
-export interface IScopeableObject {
-  readAcl: string | null;
-  writeAcl: string | null;
-  id: number;
-  tableName: string;
-}
+// export interface IScopeableObject {
+//   readAcl: string | null;
+//   writeAcl: string | null;
+//   id: number;
+//   tableName: string;
+// }
 
 export enum ScopeAction {
   Read, Write
@@ -22,7 +22,7 @@ export abstract class Scope {
 
   public abstract get aclString(): string;
 
-  public abstract testAccess(user: IUser, object: IScopeableObject): Promise<boolean>;
+  public abstract testAccess(user: IUser, object: any): Promise<boolean>;
 
   public updateQueryReadAcl(user: IUser, object: PostgresModel<any>) {
     const knexableObject = object as any;
