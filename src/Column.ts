@@ -5,13 +5,13 @@ export function Column(target: any, key: string) {
   // var _val = target[key];
 
   // property getter
-  let getter = function() {
+  const getter = function() {
     console.log(`Get: ${key} => ${target.get(key)}`);
     return target.get(key);
   };
 
   // property setter
-  let setter = function(newVal: any) {
+  const setter = function(newVal: any) {
     console.log(`Set: ${key} => ${newVal}`);
     target.set(key, newVal);
   };

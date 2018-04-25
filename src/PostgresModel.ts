@@ -81,7 +81,9 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
   // abstract get defaultWriteAcl(): string;
 
   // abstract get columns(): object;
-  abstract get readOnlyColumns(): Array<string>;
+  get readOnlyColumns(): Array<string> {
+    return []
+  }
 
 
   public abstract defaultReadAclScope: Scope;
