@@ -113,23 +113,23 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
   //  Column getter/setters
   // ==============================
 
-  get createdAt(): Date { return this.get('created_at'); }
-  get updatedAt(): Date { return this.get('updated_at'); }
-
+  // get createdAt(): Date { return this.get('created_at'); }
+  // get updatedAt(): Date { return this.get('updated_at'); }
+  //
   get readAcl(): string | null { return this.get('readAcl'); }
   set readAcl(value: string | null) { this.set('readAcl', value); }
 
   get writeAcl(): string | null { return this.get('writeAcl'); }
   set writeAcl(value: string | null) { this.set('writeAcl', value); }
-
-  get deleted(): boolean { return this.get('deleted') || false; }
-  set deleted(value: boolean) { this.set('deleted',value); }
-
-  get userId(): number | null { return this.get('userId'); }
-  set userId(value: number | null) { this.set('userId',value); }
-
-  get companyId(): number | null { return this.get('companyId'); }
-  set companyId(value: number | null) { this.set('companyId',value); }
+  //
+  // get deleted(): boolean { return this.get('deleted') || false; }
+  // set deleted(value: boolean) { this.set('deleted',value); }
+  //
+  // get userId(): number | null { return this.get('userId'); }
+  // set userId(value: number | null) { this.set('userId',value); }
+  //
+  // get companyId(): number | null { return this.get('companyId'); }
+  // set companyId(value: number | null) { this.set('companyId',value); }
 
   // ==============================
   //  Business Logic

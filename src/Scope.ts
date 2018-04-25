@@ -8,8 +8,6 @@ export interface IScopeableObject {
   writeAcl: string | null;
   id: number;
   tableName: string;
-  userId: number | null;
-  companyId: number | null;
 }
 
 export enum ScopeAction {
