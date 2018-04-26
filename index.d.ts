@@ -7,6 +7,7 @@ import * as Bookshelf from 'bookshelf';
 import * as BlueBird from 'bluebird';
 import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf';
 
+export const bookshelf: Bookshelf;
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
     instanceName: string;
     pluralInstanceName: string;
@@ -30,7 +31,7 @@ export interface IPaginatedCollection<T extends Model<any>> extends Collection<T
 export class PostgresModelScopeFactory {
     static scopeFactory: IScopeFactory;
 }
-export abstract class PostgresModel<T extends Bookshelf.Model<T>> extends Bookshelf.Model<T> {
+export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<T> {
     readonly abstract tableName: string;
     readonly readOnlyColumns: Array<string>;
     abstract defaultReadAclScope: Scope;

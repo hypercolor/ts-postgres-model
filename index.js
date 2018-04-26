@@ -159,23 +159,24 @@ function Column(target, key) {
 /*!******************************!*\
   !*** ./src/PostgresModel.ts ***!
   \******************************/
-/*! exports provided: PostgresModelScopeFactory, PostgresModel */
+/*! exports provided: bookshelf, PostgresModelScopeFactory, PostgresModel */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bookshelf", function() { return bookshelf; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostgresModelScopeFactory", function() { return PostgresModelScopeFactory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostgresModel", function() { return PostgresModel; });
-/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bookshelf */ "bookshelf");
-/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bookshelf__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bluebird */ "bluebird");
-/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bluebird__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pluralize */ "pluralize");
-/* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pluralize__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
+/* harmony import */ var knex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! knex */ "knex");
+/* harmony import */ var knex__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(knex__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bookshelf */ "bookshelf");
+/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bookshelf__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bluebird */ "bluebird");
+/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bluebird__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pluralize */ "pluralize");
+/* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(pluralize__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
 
-// import * as Bookshelf from 'bookshelf';
-// import * as Knex from 'knex';
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -186,8 +187,10 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+// import * as Bookshelf from 'bookshelf';
 
-// const bookshelf = Bookshelf(Knex({}));
+
+var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__({}));
 
 
 
@@ -234,7 +237,7 @@ var PostgresModel = (function (_super) {
     });
     Object.defineProperty(PostgresModel, "pluralInstanceName", {
         get: function () {
-            return pluralize__WEBPACK_IMPORTED_MODULE_2__(this.instanceName);
+            return pluralize__WEBPACK_IMPORTED_MODULE_3__(this.instanceName);
         },
         enumerable: true,
         configurable: true
@@ -309,7 +312,7 @@ var PostgresModel = (function (_super) {
         // ==============================
         get: function () {
             if (this.readAcl) {
-                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.readAcl, _Scope__WEBPACK_IMPORTED_MODULE_3__["ScopeAction"].Read);
+                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.readAcl, _Scope__WEBPACK_IMPORTED_MODULE_4__["ScopeAction"].Read);
             }
             else {
                 return this.defaultReadAclScope;
@@ -321,7 +324,7 @@ var PostgresModel = (function (_super) {
     Object.defineProperty(PostgresModel.prototype, "writeAclScope", {
         get: function () {
             if (this.writeAcl) {
-                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.writeAcl, _Scope__WEBPACK_IMPORTED_MODULE_3__["ScopeAction"].Write);
+                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.writeAcl, _Scope__WEBPACK_IMPORTED_MODULE_4__["ScopeAction"].Write);
             }
             else {
                 return this.defaultWriteAclScope;
@@ -331,7 +334,7 @@ var PostgresModel = (function (_super) {
         configurable: true
     });
     PostgresModel.prototype.save = function () {
-        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: 'Must use saveForUser.' });
+        return bluebird__WEBPACK_IMPORTED_MODULE_2__["reject"]({ code: 500, error: 'Must use saveForUser.' });
     };
     PostgresModel.prototype.saveForUser = function (user, options) {
         var _this = this;
@@ -368,7 +371,7 @@ var PostgresModel = (function (_super) {
         });
     };
     PostgresModel.prototype.destroy = function (options) {
-        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: 'Must use destroyForUser.' });
+        return bluebird__WEBPACK_IMPORTED_MODULE_2__["reject"]({ code: 500, error: 'Must use destroyForUser.' });
     };
     PostgresModel.prototype.destroyForUser = function (user, options) {
         var _this = this;
@@ -383,7 +386,7 @@ var PostgresModel = (function (_super) {
         });
     };
     PostgresModel.prototype.fetch = function (fetchOptions) {
-        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });
+        return bluebird__WEBPACK_IMPORTED_MODULE_2__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });
     };
     PostgresModel.prototype.fetchForUser = function (user, fetchOptions) {
         var _this = this;
@@ -448,7 +451,7 @@ var PostgresModel = (function (_super) {
         });
     };
     return PostgresModel;
-}(bookshelf__WEBPACK_IMPORTED_MODULE_0__["Model"]));
+}(bookshelf.Model));
 
 
 
@@ -531,6 +534,17 @@ module.exports = require("bluebird");
 /***/ (function(module, exports) {
 
 module.exports = require("bookshelf");
+
+/***/ }),
+
+/***/ "knex":
+/*!***********************!*\
+  !*** external "knex" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("knex");
 
 /***/ }),
 

@@ -1,11 +1,11 @@
 
 
 // import * as Bookshelf from 'bookshelf';
-// import * as Knex from 'knex';
+import * as Knex from 'knex';
 
 import * as Bookshelf from 'bookshelf';
 
-// const bookshelf = Bookshelf(Knex({}));
+export const bookshelf = Bookshelf(Knex({}));
 
 import * as BlueBird from 'bluebird';
 import {Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions} from 'bookshelf';
@@ -72,7 +72,7 @@ export class PostgresModelScopeFactory {
 }
 
 
-export abstract class PostgresModel<T extends Bookshelf.Model<T>> extends Bookshelf.Model<T> {
+export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<T> {
 
   // ==============================
   //  Model Configuration
