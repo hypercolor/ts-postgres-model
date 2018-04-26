@@ -5,7 +5,7 @@ import * as Knex from 'knex';
 
 import * as Bookshelf from 'bookshelf';
 
-export const bookshelf = Bookshelf(Knex({}));
+export const bookshelf = Bookshelf(Knex({client: 'postgresql'}));
 
 import * as BlueBird from 'bluebird';
 import {Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions} from 'bookshelf';

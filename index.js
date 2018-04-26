@@ -190,7 +190,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 // import * as Bookshelf from 'bookshelf';
 
 
-var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__({}));
+var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__({ client: 'postgresql' }));
 
 
 
