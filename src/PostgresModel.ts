@@ -3,15 +3,18 @@
 // import * as Bookshelf from 'bookshelf';
 // import * as Knex from 'knex';
 
+import * as Bookshelf from 'bookshelf';
+
 // const bookshelf = Bookshelf(Knex({}));
 
 import * as BlueBird from 'bluebird';
 import {Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions} from 'bookshelf';
 
 import * as Pluralize from 'pluralize';
-import { IScopeFactory } from "./IScopeFactory";
-import { IUser } from "./IUser";
-import { Scope, ScopeAction } from "./Scope";
+// import {Postgres} from '../../src/interfaces/postgres';
+import { IScopeFactory } from './IScopeFactory';
+import { IUser } from './IUser';
+import { Scope, ScopeAction } from './Scope';
 
 // import {Postgres} from '../../interfaces/postgres';
 // import {
@@ -65,11 +68,11 @@ export interface IPaginatedCollection<T extends Model<any>> extends Collection<T
 // }
 
 export class PostgresModelScopeFactory {
-  public static scopeFactory: IScopeFactory
+  public static scopeFactory: IScopeFactory;
 }
 
 
-export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
+export abstract class PostgresModel<T extends Bookshelf.Model<T>> extends Bookshelf.Model<T> {
 
   // ==============================
   //  Model Configuration
@@ -82,7 +85,7 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
 
   // abstract get columns(): object;
   get readOnlyColumns(): Array<string> {
-    return []
+    return [];
   }
 
 
@@ -204,7 +207,7 @@ export abstract class PostgresModel<T extends Model<T>> extends Model<T> {
       } else {
         // const companyIds = user !== undefined ? user.getVisibleCompanyIds() : [];
         // console.log('Failed auth test for object: ' + JSON.stringify(this) + ' for user: ' + JSON.stringify(user) + ' with companies: ' + JSON.stringify(companyIds));
-        return Promise.reject({code: 403, error: "User not authorized for that action."})
+        return Promise.reject({code: 403, error: 'User not authorized for that action.'});
         // return Promise.reject(new Error(''));
       }
     });

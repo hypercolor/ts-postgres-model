@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /*!******************!*\
   !*** ./index.ts ***!
   \******************/
-/*! exports provided: PostgresModel, Scope */
+/*! exports provided: PostgresModel, Scope, ScopeAction, Column */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -102,9 +102,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_Scope__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/Scope */ "./src/Scope.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Scope", function() { return _src_Scope__WEBPACK_IMPORTED_MODULE_1__["Scope"]; });
 
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScopeAction", function() { return _src_Scope__WEBPACK_IMPORTED_MODULE_1__["ScopeAction"]; });
+
+/* harmony import */ var _src_Column__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/Column */ "./src/Column.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return _src_Column__WEBPACK_IMPORTED_MODULE_2__["Column"]; });
 
 
 
+
+
+
+
+/***/ }),
+
+/***/ "./src/Column.ts":
+/*!***********************!*\
+  !*** ./src/Column.ts ***!
+  \***********************/
+/*! exports provided: Column */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return Column; });
+
+function Column(target, key) {
+    // property getter
+    var getter = function () {
+        console.log("Get: " + key + " => " + target.get(key));
+        return this.get(key);
+    };
+    // property setter
+    var setter = function (newVal) {
+        console.log("Set: " + key + " => " + newVal);
+        this.set(key, newVal);
+    };
+    // Delete property.
+    if (delete target[key]) {
+        // Create new property with getter and setter
+        Object.defineProperty(target, key, {
+            get: getter,
+            set: setter,
+            enumerable: true,
+            configurable: true
+        });
+    }
+    else {
+        console.log('Warning, couldnt delete property: ' + key);
+    }
+}
 
 
 /***/ }),
@@ -120,10 +166,10 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostgresModelScopeFactory", function() { return PostgresModelScopeFactory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostgresModel", function() { return PostgresModel; });
-/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bluebird */ "bluebird");
-/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bluebird__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bookshelf */ "bookshelf");
-/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bookshelf__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bookshelf */ "bookshelf");
+/* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bookshelf__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bluebird */ "bluebird");
+/* harmony import */ var bluebird__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bluebird__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pluralize */ "pluralize");
 /* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pluralize__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
@@ -140,8 +186,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-// const bookshelf = Bookshelf(Knex({}));
 
+// const bookshelf = Bookshelf(Knex({}));
 
 
 
@@ -169,6 +215,16 @@ var PostgresModel = (function (_super) {
     function PostgresModel() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Object.defineProperty(PostgresModel.prototype, "readOnlyColumns", {
+        // abstract get defaultReadAcl(): string;
+        // abstract get defaultWriteAcl(): string;
+        // abstract get columns(): object;
+        get: function () {
+            return [];
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(PostgresModel, "instanceName", {
         get: function () {
             return this.name.charAt(0).toLowerCase() + this.name.slice(1);
@@ -188,7 +244,7 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(PostgresModel.prototype, "createdAt", {
+    Object.defineProperty(PostgresModel.prototype, "readAcl", {
         // ==============================
         //  Constructor
         // ==============================
@@ -201,16 +257,9 @@ var PostgresModel = (function (_super) {
         // ==============================
         //  Column getter/setters
         // ==============================
-        get: function () { return this.get('created_at'); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PostgresModel.prototype, "updatedAt", {
-        get: function () { return this.get('updated_at'); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PostgresModel.prototype, "readAcl", {
+        // get createdAt(): Date { return this.get('created_at'); }
+        // get updatedAt(): Date { return this.get('updated_at'); }
+        //
         get: function () { return this.get('readAcl'); },
         set: function (value) { this.set('readAcl', value); },
         enumerable: true,
@@ -222,24 +271,15 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(PostgresModel.prototype, "deleted", {
-        get: function () { return this.get('deleted') || false; },
-        set: function (value) { this.set('deleted', value); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PostgresModel.prototype, "userId", {
-        get: function () { return this.get('userId'); },
-        set: function (value) { this.set('userId', value); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PostgresModel.prototype, "companyId", {
-        get: function () { return this.get('companyId'); },
-        set: function (value) { this.set('companyId', value); },
-        enumerable: true,
-        configurable: true
-    });
+    //
+    // get deleted(): boolean { return this.get('deleted') || false; }
+    // set deleted(value: boolean) { this.set('deleted',value); }
+    //
+    // get userId(): number | null { return this.get('userId'); }
+    // set userId(value: number | null) { this.set('userId',value); }
+    //
+    // get companyId(): number | null { return this.get('companyId'); }
+    // set companyId(value: number | null) { this.set('companyId',value); }
     // ==============================
     //  Business Logic
     // ==============================
@@ -256,7 +296,7 @@ var PostgresModel = (function (_super) {
         return this.willBeUpdated(params)
             .then(function (updatedParams) {
             Object.keys(updatedParams).forEach(function (key) {
-                if (Object.values(_this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
+                if (restrictedKeys.indexOf(key) === -1) {
                     _this.set(key, updatedParams[key]);
                 }
             });
@@ -291,7 +331,7 @@ var PostgresModel = (function (_super) {
         configurable: true
     });
     PostgresModel.prototype.save = function () {
-        return bluebird__WEBPACK_IMPORTED_MODULE_0__["reject"]({ code: 500, error: 'Must use saveForUser.' });
+        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: 'Must use saveForUser.' });
     };
     PostgresModel.prototype.saveForUser = function (user, options) {
         var _this = this;
@@ -316,7 +356,7 @@ var PostgresModel = (function (_super) {
             else {
                 // const companyIds = user !== undefined ? user.getVisibleCompanyIds() : [];
                 // console.log('Failed auth test for object: ' + JSON.stringify(this) + ' for user: ' + JSON.stringify(user) + ' with companies: ' + JSON.stringify(companyIds));
-                return Promise.reject({ code: 403, error: "User not authorized for that action." });
+                return Promise.reject({ code: 403, error: 'User not authorized for that action.' });
                 // return Promise.reject(new Error(''));
             }
         });
@@ -328,7 +368,7 @@ var PostgresModel = (function (_super) {
         });
     };
     PostgresModel.prototype.destroy = function (options) {
-        return bluebird__WEBPACK_IMPORTED_MODULE_0__["reject"]({ code: 500, error: 'Must use destroyForUser.' });
+        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: 'Must use destroyForUser.' });
     };
     PostgresModel.prototype.destroyForUser = function (user, options) {
         var _this = this;
@@ -343,7 +383,7 @@ var PostgresModel = (function (_super) {
         });
     };
     PostgresModel.prototype.fetch = function (fetchOptions) {
-        return bluebird__WEBPACK_IMPORTED_MODULE_0__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });
+        return bluebird__WEBPACK_IMPORTED_MODULE_1__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });
     };
     PostgresModel.prototype.fetchForUser = function (user, fetchOptions) {
         var _this = this;
@@ -408,7 +448,7 @@ var PostgresModel = (function (_super) {
         });
     };
     return PostgresModel;
-}(bookshelf__WEBPACK_IMPORTED_MODULE_1__["Model"]));
+}(bookshelf__WEBPACK_IMPORTED_MODULE_0__["Model"]));
 
 
 
@@ -426,6 +466,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScopeAction", function() { return ScopeAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Scope", function() { return Scope; });
 
+// TODO: Refactor this interface to allow each concrete class to provide their own assumptions about keys on the model
+// export interface IScopeableObject {
+//   readAcl: string | null;
+//   writeAcl: string | null;
+//   id: number;
+//   tableName: string;
+// }
 var ScopeAction;
 (function (ScopeAction) {
     ScopeAction[ScopeAction["Read"] = 0] = "Read";

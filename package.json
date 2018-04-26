@@ -5,7 +5,7 @@
   "main": "umd/index.js",
   "module": "lib/index.js",
   "es2015": "lib-esm/index.js",
-  "typings": "typings/index.d.ts",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://www.github.com/hypercolor/ts-postgres-model"
@@ -98,11 +98,11 @@
     }
   },
   "dependencies": {
+    "@types/pluralize": "0.0.28",
     "bluebird": "3.5.1",
     "bookshelf": "0.13.3",
     "knex": "0.14.6",
-    "pluralize": "7.0.0",
-    "@types/pluralize": "0.0.28"
+    "pluralize": "7.0.0"
   },
   "devDependencies": {
     "@types/bluebird": "3.5.20",
@@ -114,6 +114,7 @@
     "commitizen": "2.9.6",
     "cross-var": "1.0.3",
     "cz-conventional-changelog": "2.0.0",
+    "dts-bundle": "0.7.3",
     "gzip-size-cli": "2.0.0",
     "husky": "0.14.1",
     "irish-pub": "0.2.0",
