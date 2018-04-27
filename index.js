@@ -247,7 +247,7 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(PostgresModel.prototype, "readAcl", {
+    Object.defineProperty(PostgresModel.prototype, "createdAt", {
         // ==============================
         //  Constructor
         // ==============================
@@ -260,8 +260,16 @@ var PostgresModel = (function (_super) {
         // ==============================
         //  Column getter/setters
         // ==============================
-        // get createdAt(): Date { return this.get('created_at'); }
-        // get updatedAt(): Date { return this.get('updated_at'); }
+        get: function () { return this.get('created_at'); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PostgresModel.prototype, "updatedAt", {
+        get: function () { return this.get('updated_at'); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PostgresModel.prototype, "readAcl", {
         //
         get: function () { return this.get('readAcl'); },
         set: function (value) { this.set('readAcl', value); },
@@ -274,9 +282,13 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    //
-    // get deleted(): boolean { return this.get('deleted') || false; }
-    // set deleted(value: boolean) { this.set('deleted',value); }
+    Object.defineProperty(PostgresModel.prototype, "deleted", {
+        //
+        get: function () { return this.get('deleted') || false; },
+        set: function (value) { this.set('deleted', value); },
+        enumerable: true,
+        configurable: true
+    });
     //
     // get userId(): number | null { return this.get('userId'); }
     // set userId(value: number | null) { this.set('userId',value); }

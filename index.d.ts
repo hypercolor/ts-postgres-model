@@ -39,8 +39,11 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     static readonly instanceName: string;
     static readonly pluralInstanceName: string;
     readonly hasTimestamps: boolean;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
     readAcl: string | null;
     writeAcl: string | null;
+    deleted: boolean;
     willBeUpdated(newParams: any): Promise<any>;
     updateWithParams(params: any, user: IUser, options?: SaveOptions): Promise<T>;
     readonly readAclScope: Scope;
