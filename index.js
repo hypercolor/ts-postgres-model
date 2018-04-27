@@ -134,7 +134,7 @@ function Column(target, key) {
     };
     // property setter
     var setter = function (newVal) {
-        console.log("Set: " + key + " => " + newVal);
+        console.log("Set: " + key + " => " + newVal + ", " + this);
         this.set(key, newVal);
     };
     // Delete property.

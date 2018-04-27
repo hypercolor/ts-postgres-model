@@ -8,7 +8,7 @@ export function Column(target: any, key: string) {
 
   // property setter
   const setter = function(this: any, newVal: any) {
-    console.log(`Set: ${key} => ${newVal}`);
+    console.log(`Set: ${key} => ${newVal}, ${this}`);
     this.set(key, newVal);
   };
 
