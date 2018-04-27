@@ -5,7 +5,15 @@ import * as Knex from 'knex';
 
 import * as Bookshelf from 'bookshelf';
 
-export const bookshelf = Bookshelf(Knex({client: 'postgresql'}));
+const knexConfig = {
+  client: 'postgresql',
+  connection: process.env.POSTGRES_URL,
+  debug: process.env.KNEX_DEBUG === 'true'
+};
+
+export const bookshelf = Bookshelf(Knex(knexConfig));
+bookshelf.plugin('pagination');
+
 
 import * as BlueBird from 'bluebird';
 import {Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions} from 'bookshelf';

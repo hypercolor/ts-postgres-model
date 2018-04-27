@@ -190,7 +190,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 // import * as Bookshelf from 'bookshelf';
 
 
-var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__({ client: 'postgresql' }));
+var knexConfig = {
+    client: 'postgresql',
+    connection: process.env.POSTGRES_URL,
+    debug: process.env.KNEX_DEBUG === 'true'
+};
+var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__(knexConfig));
+bookshelf.plugin('pagination');
 
 
 
