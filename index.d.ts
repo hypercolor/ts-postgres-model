@@ -2,10 +2,12 @@
 // Dependencies for this module:
 //   ../bookshelf
 //   ../bluebird
+//   ../express
 
 import * as Bookshelf from 'bookshelf';
 import * as BlueBird from 'bluebird';
 import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf';
+import * as e from 'express';
 
 export const bookshelf: Bookshelf;
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
@@ -72,6 +74,9 @@ export interface IUser {
     id: number;
     isAdmin(): boolean;
 }
+export interface IUserRequest extends e.Request {
+    user: IUser;
+}
 
 export enum ScopeAction {
     Read = 0,
@@ -86,6 +91,4 @@ export abstract class Scope {
     updateQueryReadAcl(user: IUser, object: PostgresModel<any>): Promise<any>;
     protected abstract updateKnexQuery(user: IUser, object: IKnexObject): Promise<any>;
 }
-
-export function Column(target: any, key: string): void;
 

@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /*!******************!*\
   !*** ./index.ts ***!
   \******************/
-/*! exports provided: PostgresModel, Scope, ScopeAction, Column */
+/*! exports provided: PostgresModel, Scope, ScopeAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104,53 +104,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScopeAction", function() { return _src_Scope__WEBPACK_IMPORTED_MODULE_1__["ScopeAction"]; });
 
-/* harmony import */ var _src_Column__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/Column */ "./src/Column.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return _src_Column__WEBPACK_IMPORTED_MODULE_2__["Column"]; });
 
 
 
-
-
-
-
-/***/ }),
-
-/***/ "./src/Column.ts":
-/*!***********************!*\
-  !*** ./src/Column.ts ***!
-  \***********************/
-/*! exports provided: Column */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return Column; });
-
-function Column(target, key) {
-    // property getter
-    var getter = function () {
-        console.log("Get: " + key + " => " + target.get(key));
-        return this.get(key);
-    };
-    // property setter
-    var setter = function (newVal) {
-        console.log("Set: " + key + " => " + newVal + ", " + this);
-        this.set(key, newVal);
-    };
-    // Delete property.
-    if (delete target[key]) {
-        // Create new property with getter and setter
-        Object.defineProperty(target, key, {
-            get: getter,
-            set: setter,
-            enumerable: true,
-            configurable: true
-        });
-    }
-    else {
-        console.log('Warning, couldnt delete property: ' + key);
-    }
-}
 
 
 /***/ }),
