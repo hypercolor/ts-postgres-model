@@ -2,12 +2,10 @@
 // Dependencies for this module:
 //   ../bookshelf
 //   ../bluebird
-//   ../express
 
 import * as Bookshelf from 'bookshelf';
 import * as BlueBird from 'bluebird';
 import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf';
-import * as e from 'express';
 
 export const bookshelf: Bookshelf;
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
@@ -73,9 +71,6 @@ export interface IScopeFactory {
 export interface IUser {
     id: number;
     isAdmin(): boolean;
-}
-export interface IUserRequest extends e.Request {
-    user: IUser;
 }
 
 export enum ScopeAction {
