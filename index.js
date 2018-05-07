@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /*!******************!*\
   !*** ./index.ts ***!
   \******************/
-/*! exports provided: PostgresModel, Scope, ScopeAction */
+/*! exports provided: PostgresModel, Scope, ScopeAction, Schemas */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -103,6 +103,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Scope", function() { return _src_Scope__WEBPACK_IMPORTED_MODULE_1__["Scope"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScopeAction", function() { return _src_Scope__WEBPACK_IMPORTED_MODULE_1__["ScopeAction"]; });
+
+/* harmony import */ var _src_Schemas__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/Schemas */ "./src/Schemas.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Schemas", function() { return _src_Schemas__WEBPACK_IMPORTED_MODULE_2__["Schemas"]; });
+
 
 
 
@@ -426,6 +430,74 @@ var PostgresModel = (function (_super) {
     };
     return PostgresModel;
 }(bookshelf.Model));
+
+
+
+/***/ }),
+
+/***/ "./src/Schemas.ts":
+/*!************************!*\
+  !*** ./src/Schemas.ts ***!
+  \************************/
+/*! exports provided: PostgresDataType, Schemas */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostgresDataType", function() { return PostgresDataType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Schemas", function() { return Schemas; });
+
+var PostgresDataType;
+(function (PostgresDataType) {
+    PostgresDataType["Single"] = "real";
+    PostgresDataType["Double"] = "double precision";
+})(PostgresDataType = PostgresDataType || (PostgresDataType = {}));
+var Schemas = (function () {
+    function Schemas() {
+    }
+    Schemas.createAutoUpdatedAtTimestampTrigger = function (knex) {
+        return knex.raw(this.autoUpdateSQL);
+    };
+    Schemas.dropAutoUpdatedAtTimestampTrigger = function (knex) {
+        return knex.raw(this.dropFunction);
+    };
+    Schemas.addAutoUpdatedAtTimestampTriggerForTable = function (knex, tableName) {
+        return knex.raw("CREATE TRIGGER update_" + tableName + "_updated_at BEFORE UPDATE ON " + tableName + " FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();");
+    };
+    Schemas.changeColumnType = function (knex, table, column, newType) {
+        return knex.raw('ALTER TABLE "' + table + '" ALTER COLUMN "' + column + '" TYPE ' + newType + '');
+    };
+    Schemas.dropTableCascade = function (knex, tableName) {
+        return knex.raw('DROP TABLE ' + tableName + ' CASCADE');
+    };
+    // public static alterConstraint(knex: Knex, table: string, constraintName: string) {
+    //
+    //   const sql = 'begin;\n' +
+    //     '\n' +
+    //     'alter table ' + table + '\n' +
+    //     'drop constraint ' + constraintName + ';\n' +
+    //     '\n' +
+    //     'alter table ' + table + '\n' +
+    //     'add constraint ' + constraintName + '\n' +
+    //     'foreign key (customer_id)\n' +
+    //     'references customers (id)\n' +
+    //     'on delete cascade;\n' +
+    //     '\n' +
+    //     'commit;'
+    //
+    // }
+    Schemas.createStandardTable = function (knex, tableName, builder) {
+        return knex.schema.createTable(tableName, function (t) {
+            t.increments("id").primary();
+            t.timestamps(false, true);
+            t.boolean('deleted').notNullable().defaultTo(false);
+            builder(t);
+        });
+    };
+    Schemas.autoUpdateSQL = "CREATE OR REPLACE FUNCTION update_updated_at_column()\n RETURNS TRIGGER AS $$ \nBEGIN \n   IF row(NEW.*) IS DISTINCT FROM row(OLD.*) THEN\n      NEW.updated_at = now();\n      RETURN NEW;\n   ELSE\n      RETURN OLD;\n   END IF;\nEND;\n$$ language 'plpgsql';";
+    Schemas.dropFunction = "DROP FUNCTION update_updated_at_column();";
+    return Schemas;
+}());
 
 
 

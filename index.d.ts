@@ -2,10 +2,12 @@
 // Dependencies for this module:
 //   ../bookshelf
 //   ../bluebird
+//   ../knex
 
 import * as Bookshelf from 'bookshelf';
 import * as BlueBird from 'bluebird';
 import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf';
+import * as Knex from "knex";
 
 export const bookshelf: Bookshelf;
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
@@ -85,5 +87,18 @@ export abstract class Scope {
     abstract testAccess(user: IUser, object: any): Promise<boolean>;
     updateQueryReadAcl(user: IUser, object: PostgresModel<any>): Promise<any>;
     protected abstract updateKnexQuery(user: IUser, object: IKnexObject): Promise<any>;
+}
+
+export enum PostgresDataType {
+    Single = "real",
+    Double = "double precision",
+}
+export class Schemas {
+    static createAutoUpdatedAtTimestampTrigger(knex: Knex): Knex.Raw;
+    static dropAutoUpdatedAtTimestampTrigger(knex: Knex): Knex.Raw;
+    static addAutoUpdatedAtTimestampTriggerForTable(knex: Knex, tableName: string): Knex.Raw;
+    static changeColumnType(knex: Knex, table: string, column: string, newType: PostgresDataType): Knex.Raw;
+    static dropTableCascade(knex: Knex, tableName: string): Knex.Raw;
+    static createStandardTable(knex: Knex, tableName: string, builder: (t: Knex.TableBuilder) => void): Knex.SchemaBuilder;
 }
 
