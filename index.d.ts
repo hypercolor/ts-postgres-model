@@ -7,7 +7,7 @@
 import * as Bookshelf from 'bookshelf';
 import * as BlueBird from 'bluebird';
 import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf';
-import * as Knex from "knex";
+import * as Knex from 'knex';
 
 export const bookshelf: Bookshelf;
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
@@ -35,6 +35,7 @@ export class PostgresModelScopeFactory {
 }
 export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<T> {
     readonly abstract tableName: string;
+    readonly abstract columns: object;
     readonly readOnlyColumns: Array<string>;
     abstract defaultReadAclScope: Scope;
     abstract defaultWriteAclScope: Scope;
@@ -64,6 +65,7 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     fetchAllForUser(user: IUser, fetchOptions?: FetchAllOptions): Promise<Collection<T>>;
     fetchPageForUser(user: IUser, options?: IFetchPageOptions): Promise<IPaginatedCollection<T>>;
     fetchAllIgnoringReadAcl(fetchOptions?: FetchAllOptions): Promise<Collection<T>>;
+    lazyLoad(relationships: Array<string>): Promise<T>;
 }
 
 export interface IScopeFactory {

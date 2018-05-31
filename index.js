@@ -147,7 +147,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-// import * as Bookshelf from 'bookshelf';
 
 
 var knexConfig = {
@@ -160,19 +159,6 @@ bookshelf.plugin('pagination');
 
 
 
-// declare namespace PaginatedBookshelf {
-//
-//
-//
-//
-//
-//   export class PaginatedModel<T extends Model<any>> extends Model<T> {
-//
-//     public fetchPage(options?: IFetchPageOptions): Bluebird<PaginatedCollection<T>>;
-//
-//   }
-//
-// }
 var PostgresModelScopeFactory = (function () {
     function PostgresModelScopeFactory() {
     }
@@ -185,9 +171,6 @@ var PostgresModel = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Object.defineProperty(PostgresModel.prototype, "readOnlyColumns", {
-        // abstract get defaultReadAcl(): string;
-        // abstract get defaultWriteAcl(): string;
-        // abstract get columns(): object;
         get: function () {
             return [];
         },
@@ -255,12 +238,6 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    //
-    // get userId(): number | null { return this.get('userId'); }
-    // set userId(value: number | null) { this.set('userId',value); }
-    //
-    // get companyId(): number | null { return this.get('companyId'); }
-    // set companyId(value: number | null) { this.set('companyId',value); }
     // ==============================
     //  Business Logic
     // ==============================
@@ -277,7 +254,7 @@ var PostgresModel = (function (_super) {
         return this.willBeUpdated(params)
             .then(function (updatedParams) {
             Object.keys(updatedParams).forEach(function (key) {
-                if (restrictedKeys.indexOf(key) === -1) {
+                if (Object.values(_this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
                     _this.set(key, updatedParams[key]);
                 }
             });
@@ -428,6 +405,31 @@ var PostgresModel = (function (_super) {
             return _super.prototype.fetchAll.call(_this, fetchOptions);
         });
     };
+    // ==============================
+    //  Lazy Loading
+    // ==============================
+    PostgresModel.prototype.lazyLoad = function (relationships) {
+        var _this = this;
+        relationships = relationships || [];
+        if (relationships.constructor !== Array) {
+            return Promise.reject({ code: 500, error: 'Must send an array of relationships.' });
+        }
+        else {
+            return Promise.resolve()
+                .then(function () {
+                return _this.load(relationships);
+            });
+            // return Promise.resolve()
+            // .then(() => {
+            //   return this.query(qb => {
+            //     qb.where('id', this.id);
+            //   }).fetch({withRelated: relationships});
+            // })
+            // .then(object => {
+            //   return Promise.resolve(object);
+            // });
+        }
+    };
     return PostgresModel;
 }(bookshelf.Model));
 
@@ -462,7 +464,11 @@ var Schemas = (function () {
         return knex.raw(this.dropFunction);
     };
     Schemas.addAutoUpdatedAtTimestampTriggerForTable = function (knex, tableName) {
-        return knex.raw("CREATE TRIGGER update_" + tableName + "_updated_at BEFORE UPDATE ON " + tableName + " FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();");
+        return knex.raw('CREATE TRIGGER update_' +
+            tableName +
+            '_updated_at BEFORE UPDATE ON ' +
+            tableName +
+            ' FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();');
     };
     Schemas.changeColumnType = function (knex, table, column, newType) {
         return knex.raw('ALTER TABLE "' + table + '" ALTER COLUMN "' + column + '" TYPE ' + newType + '');
@@ -488,14 +494,14 @@ var Schemas = (function () {
     // }
     Schemas.createStandardTable = function (knex, tableName, builder) {
         return knex.schema.createTable(tableName, function (t) {
-            t.increments("id").primary();
+            t.increments('id').primary();
             t.timestamps(false, true);
             t.boolean('deleted').notNullable().defaultTo(false);
             builder(t);
         });
     };
     Schemas.autoUpdateSQL = "CREATE OR REPLACE FUNCTION update_updated_at_column()\n RETURNS TRIGGER AS $$ \nBEGIN \n   IF row(NEW.*) IS DISTINCT FROM row(OLD.*) THEN\n      NEW.updated_at = now();\n      RETURN NEW;\n   ELSE\n      RETURN OLD;\n   END IF;\nEND;\n$$ language 'plpgsql';";
-    Schemas.dropFunction = "DROP FUNCTION update_updated_at_column();";
+    Schemas.dropFunction = 'DROP FUNCTION update_updated_at_column();';
     return Schemas;
 }());
 
