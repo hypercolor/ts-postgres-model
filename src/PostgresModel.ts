@@ -211,8 +211,10 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     )
   }
 
-  public destroyIgnoringWriteAcl(options?: DestroyOptions): BlueBird<any> {
-    return super.destroy(options)
+  public destroyIgnoringWriteAcl(options?: DestroyOptions): Promise<any> {
+    return Promise.resolve().then(() => {
+      return super.destroy(options)
+    })
   }
 
   public fetch(fetchOptions?: FetchOptions) {

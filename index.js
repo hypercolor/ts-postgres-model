@@ -353,7 +353,11 @@ var PostgresModel = (function (_super) {
         }));
     };
     PostgresModel.prototype.destroyIgnoringWriteAcl = function (options) {
-        return _super.prototype.destroy.call(this, options);
+        var _this = this;
+        return Promise.resolve()
+            .then(function () {
+            return _super.prototype.destroy.call(_this, options);
+        });
     };
     PostgresModel.prototype.fetch = function (fetchOptions) {
         return bluebird__WEBPACK_IMPORTED_MODULE_2__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });

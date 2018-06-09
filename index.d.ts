@@ -59,7 +59,7 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     saveIgnoringWriteAcl(key?: string, val?: any, options?: SaveOptions): Promise<T>;
     destroy(options?: DestroyOptions): BlueBird<T>;
     destroyForUser(user: IUser, options?: DestroyOptions): Promise<any>;
-    destroyIgnoringWriteAcl(options?: DestroyOptions): BlueBird<any>;
+    destroyIgnoringWriteAcl(options?: DestroyOptions): Promise<any>;
     fetch(fetchOptions?: FetchOptions): BlueBird<never>;
     fetchForUser(user: IUser, fetchOptions?: any): Promise<T>;
     fetchIgnoringReadAcl(fetchOptions?: any): Promise<T>;
