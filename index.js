@@ -152,7 +152,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 var knexConfig = {
     client: 'postgresql',
     connection: process.env.POSTGRES_URL,
-    debug: process.env.KNEX_DEBUG === 'true'
+    debug: process.env.KNEX_DEBUG === 'true',
 };
 var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__(knexConfig));
 bookshelf.plugin('pagination');
@@ -192,7 +192,9 @@ var PostgresModel = (function (_super) {
         configurable: true
     });
     Object.defineProperty(PostgresModel.prototype, "hasTimestamps", {
-        get: function () { return true; },
+        get: function () {
+            return true;
+        },
         enumerable: true,
         configurable: true
     });
@@ -209,32 +211,48 @@ var PostgresModel = (function (_super) {
         // ==============================
         //  Column getter/setters
         // ==============================
-        get: function () { return this.get('created_at'); },
+        get: function () {
+            return this.get('created_at');
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(PostgresModel.prototype, "updatedAt", {
-        get: function () { return this.get('updated_at'); },
+        get: function () {
+            return this.get('updated_at');
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(PostgresModel.prototype, "readAcl", {
         //
-        get: function () { return this.get('readAcl'); },
-        set: function (value) { this.set('readAcl', value); },
+        get: function () {
+            return this.get('readAcl');
+        },
+        set: function (value) {
+            this.set('readAcl', value);
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(PostgresModel.prototype, "writeAcl", {
-        get: function () { return this.get('writeAcl'); },
-        set: function (value) { this.set('writeAcl', value); },
+        get: function () {
+            return this.get('writeAcl');
+        },
+        set: function (value) {
+            this.set('writeAcl', value);
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(PostgresModel.prototype, "deleted", {
         //
-        get: function () { return this.get('deleted') || false; },
-        set: function (value) { this.set('deleted', value); },
+        get: function () {
+            return this.get('deleted') || false;
+        },
+        set: function (value) {
+            this.set('deleted', value);
+        },
         enumerable: true,
         configurable: true
     });
@@ -246,13 +264,8 @@ var PostgresModel = (function (_super) {
     };
     PostgresModel.prototype.updateWithParams = function (params, user, options) {
         var _this = this;
-        var restrictedKeys = [
-            'id',
-            'readAcl',
-            'writeAcl'
-        ].concat(this.readOnlyColumns);
-        return this.willBeUpdated(params)
-            .then(function (updatedParams) {
+        var restrictedKeys = ['id', 'readAcl', 'writeAcl'].concat(this.readOnlyColumns);
+        return this.willBeUpdated(params).then(function (updatedParams) {
             Object.keys(updatedParams).forEach(function (key) {
                 if (Object.values(_this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
                     _this.set(key, updatedParams[key]);
@@ -302,12 +315,10 @@ var PostgresModel = (function (_super) {
                 _this.writeAclScope.testAccess(user, _this).then(resolve).catch(reject);
                 // AccessControl.verifyRequestHasPermissionToWriteObject(req,this).then(resolve).catch(reject);
             }
-        })
-            .then(function (allowed) {
+        }).then(function (allowed) {
             if (allowed) {
                 // return Promise.resolve(this);
-                return _super.prototype.save.call(_this, undefined, options)
-                    .then(function (result) {
+                return _super.prototype.save.call(_this, undefined, options).then(function (result) {
                     return Promise.resolve(result);
                 });
             }
@@ -330,7 +341,8 @@ var PostgresModel = (function (_super) {
     };
     PostgresModel.prototype.destroyForUser = function (user, options) {
         var _this = this;
-        return this.writeAclScope.testAccess(user, this)
+        return (this.writeAclScope
+            .testAccess(user, this)
             .then(function (allowed) {
             if (allowed) {
                 return _super.prototype.destroy.call(_this, options);
@@ -338,7 +350,10 @@ var PostgresModel = (function (_super) {
             else {
                 return Promise.reject({ code: 403, error: 'User not authorized for that action.' });
             }
-        });
+        }));
+    };
+    PostgresModel.prototype.destroyIgnoringWriteAcl = function (options) {
+        return _super.prototype.destroy.call(this, options);
     };
     PostgresModel.prototype.fetch = function (fetchOptions) {
         return bluebird__WEBPACK_IMPORTED_MODULE_2__["reject"]({ code: 500, error: new Error('Must use fetchForUser.') });
@@ -346,7 +361,8 @@ var PostgresModel = (function (_super) {
     PostgresModel.prototype.fetchForUser = function (user, fetchOptions) {
         var _this = this;
         var result;
-        return Promise.resolve().then(function () {
+        return Promise.resolve()
+            .then(function () {
             return _super.prototype.fetch.call(_this, fetchOptions);
         })
             .then(function (r) {
@@ -387,15 +403,13 @@ var PostgresModel = (function (_super) {
     // }
     PostgresModel.prototype.fetchAllForUser = function (user, fetchOptions) {
         var _this = this;
-        return this.readAclScope.updateQueryReadAcl(user, this)
-            .then(function () {
+        return this.readAclScope.updateQueryReadAcl(user, this).then(function () {
             return _super.prototype.fetchAll.call(_this, fetchOptions);
         });
     };
     PostgresModel.prototype.fetchPageForUser = function (user, options) {
         var _this = this;
-        return this.readAclScope.updateQueryReadAcl(user, this)
-            .then(function () {
+        return this.readAclScope.updateQueryReadAcl(user, this).then(function () {
             return _this.fetchPage(options);
         });
     };
@@ -415,8 +429,7 @@ var PostgresModel = (function (_super) {
             return Promise.reject({ code: 500, error: 'Must send an array of relationships.' });
         }
         else {
-            return Promise.resolve()
-                .then(function () {
+            return Promise.resolve().then(function () {
                 return _this.load(relationships);
             });
             // return Promise.resolve()

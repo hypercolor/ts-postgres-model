@@ -211,6 +211,10 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     )
   }
 
+  public destroyIgnoringWriteAcl(options?: DestroyOptions): BlueBird<any> {
+    return super.destroy(options)
+  }
+
   public fetch(fetchOptions?: FetchOptions) {
     return BlueBird.reject({ code: 500, error: new Error('Must use fetchForUser.') })
   }
