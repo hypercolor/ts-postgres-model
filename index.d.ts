@@ -3,8 +3,8 @@
 //   ../bookshelf
 //   ../knex
 
-import * as Bookshelf from 'bookshelf';
-import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 'bookshelf';
+import * as Bookshelf from "bookshelf";
+import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from "bookshelf";
 import * as Knex from 'knex';
 
 export const bookshelf: Bookshelf;
@@ -50,6 +50,7 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     updateWithParamsForUser(params: any, user: IUser, options?: SaveOptions): Promise<T>;
     readonly readAclScope: Scope;
     readonly writeAclScope: Scope;
+    userHasAccess(user: IUser, scopeAction: ScopeAction): Promise<boolean>;
     saveForUser(user: IUser, options?: SaveOptions): Promise<T>;
     destroyForUser(user: IUser, options?: DestroyOptions): Promise<any>;
     fetchForUser(user: IUser, fetchOptions?: any): Promise<T>;

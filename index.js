@@ -152,6 +152,9 @@ var __extends = (undefined && undefined.__extends) || (function () {
 })();
 
 
+
+
+
 var knexConfig = {
     client: 'postgresql',
     connection: process.env.POSTGRES_URL,
@@ -159,9 +162,6 @@ var knexConfig = {
 };
 var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MODULE_0__(knexConfig));
 bookshelf.plugin('pagination');
-
-
-
 var PostgresModelScopeFactory = (function () {
     function PostgresModelScopeFactory() {
     }
@@ -322,6 +322,10 @@ var PostgresModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    PostgresModel.prototype.userHasAccess = function (user, scopeAction) {
+        var scope = scopeAction === _Scope__WEBPACK_IMPORTED_MODULE_4__["ScopeAction"].Read ? this.readAclScope : this.writeAclScope;
+        return scope.testAccess(user, this);
+    };
     // public save(attrs?: { [key: string]: any }, options?: SaveOptions): BlueBird<T>
     // public save(key?: string, val?: any, options?: SaveOptions): BlueBird<T>
     // public save() {

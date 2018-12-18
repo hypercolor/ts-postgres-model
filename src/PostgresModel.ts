@@ -1,6 +1,13 @@
 import * as Knex from 'knex'
 
 import * as Bookshelf from 'bookshelf'
+import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 'bookshelf'
+
+import * as Pluralize from 'pluralize'
+import { IScopeFactory } from './IScopeFactory'
+import { IUser } from './IUser'
+import { PublicScope } from './PublicScope'
+import { Scope, ScopeAction } from './Scope'
 
 const knexConfig = {
   client: 'postgresql',
@@ -10,14 +17,6 @@ const knexConfig = {
 
 export const bookshelf = Bookshelf(Knex(knexConfig))
 bookshelf.plugin('pagination')
-
-import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 'bookshelf'
-
-import * as Pluralize from 'pluralize'
-import { IScopeFactory } from './IScopeFactory'
-import { IUser } from './IUser'
-import { PublicScope } from './PublicScope'
-import { Scope, ScopeAction } from './Scope'
 
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
   instanceName: string
@@ -166,6 +165,11 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     } else {
       return this.defaultWriteAclScope
     }
+  }
+
+  public userHasAccess(user: IUser, scopeAction: ScopeAction): Promise<boolean> {
+    const scope = scopeAction === ScopeAction.Read ? this.readAclScope : this.writeAclScope
+    return scope.testAccess(user, this)
   }
 
   // public save(attrs?: { [key: string]: any }, options?: SaveOptions): BlueBird<T>
