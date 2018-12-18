@@ -11,8 +11,7 @@ const knexConfig = {
 export const bookshelf = Bookshelf(Knex(knexConfig))
 bookshelf.plugin('pagination')
 
-import * as BlueBird from 'bluebird'
-import { Collection, DestroyOptions, FetchAllOptions, FetchOptions, Model, SaveOptions } from 'bookshelf'
+import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 'bookshelf'
 
 import * as Pluralize from 'pluralize'
 import { IScopeFactory } from './IScopeFactory'
@@ -156,11 +155,11 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     }
   }
 
-  public save(attrs?: { [key: string]: any }, options?: SaveOptions): BlueBird<T>
-  public save(key?: string, val?: any, options?: SaveOptions): BlueBird<T>
-  public save() {
-    return BlueBird.reject({ code: 500, error: 'Must use saveForUser.' })
-  }
+  // public save(attrs?: { [key: string]: any }, options?: SaveOptions): BlueBird<T>
+  // public save(key?: string, val?: any, options?: SaveOptions): BlueBird<T>
+  // public save() {
+  //   return BlueBird.reject({ code: 500, error: 'Must use saveForUser.' })
+  // }
 
   public saveForUser(user: IUser, options?: SaveOptions): Promise<T> {
     return new Promise<boolean>((resolve, reject) => {
@@ -186,15 +185,15 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     })
   }
 
-  public saveIgnoringWriteAcl(key?: string, val?: any, options?: SaveOptions): Promise<T> {
-    return Promise.resolve().then(() => {
-      return super.save(key, val, options)
-    })
-  }
+  // public saveIgnoringWriteAcl(key?: string, val?: any, options?: SaveOptions): Promise<T> {
+  //   return Promise.resolve().then(() => {
+  //     return super.save(key, val, options)
+  //   })
+  // }
 
-  public destroy(options?: DestroyOptions): BlueBird<T> {
-    return BlueBird.reject({ code: 500, error: 'Must use destroyForUser.' })
-  }
+  // public destroy(options?: DestroyOptions): BlueBird<T> {
+  //   return BlueBird.reject({ code: 500, error: 'Must use destroyForUser.' })
+  // }
 
   public destroyForUser(user: IUser, options?: DestroyOptions): Promise<any> {
     return (
@@ -211,15 +210,15 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     )
   }
 
-  public destroyIgnoringWriteAcl(options?: DestroyOptions): Promise<any> {
-    return Promise.resolve().then(() => {
-      return super.destroy(options)
-    })
-  }
-
-  public fetch(fetchOptions?: FetchOptions) {
-    return BlueBird.reject({ code: 500, error: new Error('Must use fetchForUser.') })
-  }
+  // public destroyIgnoringWriteAcl(options?: DestroyOptions): Promise<any> {
+  //   return Promise.resolve().then(() => {
+  //     return super.destroy(options)
+  //   })
+  // }
+  //
+  // public fetch(fetchOptions?: FetchOptions) {
+  //   return BlueBird.reject({ code: 500, error: new Error('Must use fetchForUser.') })
+  // }
 
   public fetchForUser(user: IUser, fetchOptions?: any): Promise<T> {
     let result: T
@@ -248,11 +247,11 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
       })
   }
 
-  public fetchIgnoringReadAcl(fetchOptions?: any): Promise<T> {
-    return Promise.resolve().then(() => {
-      return super.fetch(fetchOptions)
-    })
-  }
+  // public fetchIgnoringReadAcl(fetchOptions?: any): Promise<T> {
+  //   return Promise.resolve().then(() => {
+  //     return super.fetch(fetchOptions)
+  //   })
+  // }
 
   // public fetchAll(fetchOptions?: FetchAllOptions){
   //   const unlock = fetchOptions ? (fetchOptions as any).unlock : null;
@@ -275,11 +274,11 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     })
   }
 
-  public fetchAllIgnoringReadAcl(fetchOptions?: FetchAllOptions): Promise<Collection<T>> {
-    return Promise.resolve().then(() => {
-      return super.fetchAll(fetchOptions)
-    })
-  }
+  // public fetchAllIgnoringReadAcl(fetchOptions?: FetchAllOptions): Promise<Collection<T>> {
+  //   return Promise.resolve().then(() => {
+  //     return super.fetchAll(fetchOptions)
+  //   })
+  // }
 
   // ==============================
   //  Lazy Loading
