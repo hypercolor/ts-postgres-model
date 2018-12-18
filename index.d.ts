@@ -3,8 +3,8 @@
 //   ../bookshelf
 //   ../knex
 
-import * as Bookshelf from "bookshelf";
-import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from "bookshelf";
+import * as Bookshelf from 'bookshelf';
+import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 'bookshelf';
 import * as Knex from 'knex';
 
 export const bookshelf: Bookshelf;
@@ -78,7 +78,7 @@ export interface IKnexObject {
 export abstract class Scope {
     readonly abstract aclString: string;
     abstract testAccess(user: IUser, object: any): Promise<boolean>;
-    updateQueryReadAcl(user: IUser, object: PostgresModel<any>): Promise<any>;
+    updateQueryReadAcl(user: IUser, object: any): Promise<any>;
     protected abstract updateKnexQuery(user: IUser, object: IKnexObject): Promise<any>;
 }
 
