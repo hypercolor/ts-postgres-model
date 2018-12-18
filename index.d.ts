@@ -35,8 +35,8 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     readonly abstract tableName: string;
     readonly abstract columns: object;
     readonly readOnlyColumns: Array<string>;
-    abstract defaultReadAclScope: Scope;
-    abstract defaultWriteAclScope: Scope;
+    defaultReadAclScope: Scope;
+    defaultWriteAclScope: Scope;
     static readonly instanceName: string;
     static readonly pluralInstanceName: string;
     readonly hasTimestamps: boolean;
@@ -46,7 +46,8 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     writeAcl: string | null;
     deleted: boolean;
     willBeUpdated(newParams: any): Promise<any>;
-    updateWithParams(params: any, user: IUser, options?: SaveOptions): Promise<T>;
+    updateWithParams(params: any, options?: SaveOptions): Promise<T>;
+    updateWithParamsForUser(params: any, user: IUser, options?: SaveOptions): Promise<T>;
     readonly readAclScope: Scope;
     readonly writeAclScope: Scope;
     saveForUser(user: IUser, options?: SaveOptions): Promise<T>;
@@ -91,5 +92,11 @@ export class Schemas {
     static changeColumnType(knex: Knex, table: string, column: string, newType: PostgresDataType): Knex.Raw;
     static dropTableCascade(knex: Knex, tableName: string): Knex.Raw;
     static createStandardTable(knex: Knex, tableName: string, builder: (t: Knex.TableBuilder) => void): Knex.SchemaBuilder;
+}
+
+export class PublicScope extends Scope {
+    aclString: string;
+    testAccess(user: IUser, object: any): Promise<boolean>;
+    updateKnexQuery(user: IUser, object: IKnexObject): Promise<any>;
 }
 

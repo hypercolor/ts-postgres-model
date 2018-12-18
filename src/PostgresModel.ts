@@ -16,6 +16,7 @@ import { Collection, DestroyOptions, FetchAllOptions, Model, SaveOptions } from 
 import * as Pluralize from 'pluralize'
 import { IScopeFactory } from './IScopeFactory'
 import { IUser } from './IUser'
+import { PublicScope } from './PublicScope'
 import { Scope, ScopeAction } from './Scope'
 
 export interface IPostgresModelClass<T extends PostgresModel<T>> {
@@ -59,8 +60,8 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     return []
   }
 
-  public abstract defaultReadAclScope: Scope
-  public abstract defaultWriteAclScope: Scope
+  public defaultReadAclScope: Scope = new PublicScope()
+  public defaultWriteAclScope: Scope = new PublicScope()
 
   static get instanceName(): string {
     return this.name.charAt(0).toLowerCase() + this.name.slice(1)
@@ -123,7 +124,19 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
     return Promise.resolve(newParams)
   }
 
-  public updateWithParams(params: any, user: IUser, options?: SaveOptions): Promise<T> {
+  public updateWithParams(params: any, options?: SaveOptions): Promise<T> {
+    const restrictedKeys = ['id', 'readAcl', 'writeAcl'].concat(this.readOnlyColumns)
+    return this.willBeUpdated(params).then(updatedParams => {
+      Object.keys(updatedParams).forEach(key => {
+        if (Object.values(this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
+          this.set(key, updatedParams[key])
+        }
+      })
+      return this.save(options)
+    })
+  }
+
+  public updateWithParamsForUser(params: any, user: IUser, options?: SaveOptions): Promise<T> {
     const restrictedKeys = ['id', 'readAcl', 'writeAcl'].concat(this.readOnlyColumns)
     return this.willBeUpdated(params).then(updatedParams => {
       Object.keys(updatedParams).forEach(key => {

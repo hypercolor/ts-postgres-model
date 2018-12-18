@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /*!******************!*\
   !*** ./index.ts ***!
   \******************/
-/*! exports provided: PostgresModel, Scope, ScopeAction, Schemas */
+/*! exports provided: PostgresModel, Scope, ScopeAction, Schemas, PublicScope */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -106,6 +106,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _src_Schemas__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/Schemas */ "./src/Schemas.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Schemas", function() { return _src_Schemas__WEBPACK_IMPORTED_MODULE_2__["Schemas"]; });
+
+/* harmony import */ var _src_PublicScope__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./src/PublicScope */ "./src/PublicScope.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PublicScope", function() { return _src_PublicScope__WEBPACK_IMPORTED_MODULE_3__["PublicScope"]; });
+
 
 
 
@@ -133,7 +137,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bookshelf__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bookshelf__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pluralize */ "pluralize");
 /* harmony import */ var pluralize__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pluralize__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
+/* harmony import */ var _PublicScope__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PublicScope */ "./src/PublicScope.ts");
+/* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
 
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -156,6 +161,7 @@ var bookshelf = bookshelf__WEBPACK_IMPORTED_MODULE_1__(knex__WEBPACK_IMPORTED_MO
 bookshelf.plugin('pagination');
 
 
+
 var PostgresModelScopeFactory = (function () {
     function PostgresModelScopeFactory() {
     }
@@ -165,7 +171,13 @@ var PostgresModelScopeFactory = (function () {
 var PostgresModel = (function (_super) {
     __extends(PostgresModel, _super);
     function PostgresModel() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        // ==============================
+        //  Model Configuration
+        // ==============================
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.defaultReadAclScope = new _PublicScope__WEBPACK_IMPORTED_MODULE_3__["PublicScope"]();
+        _this.defaultWriteAclScope = new _PublicScope__WEBPACK_IMPORTED_MODULE_3__["PublicScope"]();
+        return _this;
     }
     Object.defineProperty(PostgresModel.prototype, "readOnlyColumns", {
         get: function () {
@@ -259,7 +271,19 @@ var PostgresModel = (function (_super) {
     PostgresModel.prototype.willBeUpdated = function (newParams) {
         return Promise.resolve(newParams);
     };
-    PostgresModel.prototype.updateWithParams = function (params, user, options) {
+    PostgresModel.prototype.updateWithParams = function (params, options) {
+        var _this = this;
+        var restrictedKeys = ['id', 'readAcl', 'writeAcl'].concat(this.readOnlyColumns);
+        return this.willBeUpdated(params).then(function (updatedParams) {
+            Object.keys(updatedParams).forEach(function (key) {
+                if (Object.values(_this.columns).indexOf(key) !== -1 && restrictedKeys.indexOf(key) === -1) {
+                    _this.set(key, updatedParams[key]);
+                }
+            });
+            return _this.save(options);
+        });
+    };
+    PostgresModel.prototype.updateWithParamsForUser = function (params, user, options) {
         var _this = this;
         var restrictedKeys = ['id', 'readAcl', 'writeAcl'].concat(this.readOnlyColumns);
         return this.willBeUpdated(params).then(function (updatedParams) {
@@ -277,7 +301,7 @@ var PostgresModel = (function (_super) {
         // ==============================
         get: function () {
             if (this.readAcl) {
-                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.readAcl, _Scope__WEBPACK_IMPORTED_MODULE_3__["ScopeAction"].Read);
+                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.readAcl, _Scope__WEBPACK_IMPORTED_MODULE_4__["ScopeAction"].Read);
             }
             else {
                 return this.defaultReadAclScope;
@@ -289,7 +313,7 @@ var PostgresModel = (function (_super) {
     Object.defineProperty(PostgresModel.prototype, "writeAclScope", {
         get: function () {
             if (this.writeAcl) {
-                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.writeAcl, _Scope__WEBPACK_IMPORTED_MODULE_3__["ScopeAction"].Write);
+                return PostgresModelScopeFactory.scopeFactory.scopeForAcl(this.writeAcl, _Scope__WEBPACK_IMPORTED_MODULE_4__["ScopeAction"].Write);
             }
             else {
                 return this.defaultWriteAclScope;
@@ -444,6 +468,49 @@ var PostgresModel = (function (_super) {
     };
     return PostgresModel;
 }(bookshelf.Model));
+
+
+
+/***/ }),
+
+/***/ "./src/PublicScope.ts":
+/*!****************************!*\
+  !*** ./src/PublicScope.ts ***!
+  \****************************/
+/*! exports provided: PublicScope */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PublicScope", function() { return PublicScope; });
+/* harmony import */ var _Scope__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Scope */ "./src/Scope.ts");
+
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var PublicScope = (function (_super) {
+    __extends(PublicScope, _super);
+    function PublicScope() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.aclString = 'public';
+        return _this;
+    }
+    PublicScope.prototype.testAccess = function (user, object) {
+        return Promise.resolve(true);
+    };
+    PublicScope.prototype.updateKnexQuery = function (user, object) {
+        return Promise.resolve();
+    };
+    return PublicScope;
+}(_Scope__WEBPACK_IMPORTED_MODULE_0__["Scope"]));
 
 
 
