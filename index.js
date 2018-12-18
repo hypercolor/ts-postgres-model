@@ -280,7 +280,7 @@ var PostgresModel = (function (_super) {
                     _this.set(key, updatedParams[key]);
                 }
             });
-            return _this.save(options);
+            return _this.save(undefined, options);
         });
     };
     PostgresModel.prototype.updateWithParamsForUser = function (params, user, options) {

@@ -1,6 +1,6 @@
 {
   "name": "ts-postgres-model",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "TypeScript Postgres model abstract class",
   "main": "index.js",
   "types": "index.d.ts",

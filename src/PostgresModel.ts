@@ -131,7 +131,7 @@ export abstract class PostgresModel<T extends Model<T>> extends bookshelf.Model<
           this.set(key, updatedParams[key])
         }
       })
-      return this.save(options)
+      return this.save(undefined, options)
     })
   }
 
